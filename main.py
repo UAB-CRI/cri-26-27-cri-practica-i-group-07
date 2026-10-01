@@ -23,6 +23,17 @@ def llegir_diccionari(nom_fitxer):
 
     return paraules
 
+def trobar_variables(crossword):
+    variables = []
+
+    files = len(crossword)
+    columnes = len(crossword[0])
+
+    numero_variable = 1
+
+    for fila in range(files):
+        for columna in range(columnes):
+
 
 def main():
     crossword = llegir_crossword("MaterialsPractica/crossword_CB_v3.txt")
@@ -39,3 +50,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
