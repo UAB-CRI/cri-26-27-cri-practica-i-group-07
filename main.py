@@ -11,9 +11,31 @@ def llegir_crossword(nom_fitxer):
     return crossword
 
 
-crossword = llegir_crossword("MaterialsPractica/crossword_CB_v3.txt")
+def llegir_diccionari(nom_fitxer):
+    with open(nom_fitxer, "r", encoding="latin-1") as f:
+        paraules = []
 
-print("Crossword:")
+        for linia in f:
+            paraula = linia.strip().upper()
 
-for fila in crossword:
-    print(fila)
+            if paraula:
+                paraules.append(paraula)
+
+    return paraules
+
+
+def main():
+    crossword = llegir_crossword("MaterialsPractica/crossword_CB_v3.txt")
+    diccionari = llegir_diccionari("MaterialsPractica/diccionari_CB_v3.txt")
+
+    print("Crossword:")
+    for fila in crossword:
+        print(fila)
+
+    print("\nDiccionari:")
+    print(len(diccionari), "paraules")
+    print(diccionari)
+
+
+if __name__ == "__main__":
+    main()
