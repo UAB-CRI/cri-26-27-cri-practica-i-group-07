@@ -106,20 +106,6 @@ def trobar_encreuaments(variables):
                         })
     return encreuaments
 
-def construir_dominis(variables, diccionari):
-    dominis = {}
-
-    for variable in variables:
-        id_variable = variable["id"]
-        longitud = variable["longitud"]
-
-        # Seleccionem les paraules amb la longitud correcta
-        dominis[id_variable] = [
-            paraula for paraula in diccionari
-            if len(paraula) == longitud
-        ]
-
-    return dominis
 
 
 
