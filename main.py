@@ -107,6 +107,28 @@ def trobar_encreuaments(variables):
     return encreuaments
 
 
+def compleix_restriccions(id_variable, paraula, assignacio, encreuaments):
+    """Comprova si una paraula compleix els encreuaments amb les variables assignades."""
+
+    for encreuament in encreuaments:
+        var1 = encreuament["var1"]
+        var2 = encreuament["var2"]
+        pos1 = encreuament["pos1"]
+        pos2 = encreuament["pos2"]
+
+        # Si la variable actual és var1 i var2 ja està assignada
+        if id_variable == var1 and var2 in assignacio:
+            if paraula[pos1] != assignacio[var2][pos2]:
+                return False
+
+        # Si la variable actual és var2 i var1 ja està assignada
+        elif id_variable == var2 and var1 in assignacio:
+            if paraula[pos2] != assignacio[var1][pos1]:
+                return False
+
+    return True
+
+
 
 
 def main():
