@@ -347,6 +347,72 @@ def main():
     else:
         print("No s'ha trobat cap solució.")
 
+        
+    # Test de reduir_dominis()
+    print("\n--- Test reduir_dominis ---")
+
+    if encreuaments:
+        e = encreuaments[0]
+        id_variable = e["var1"]
+        id_altra = e["var2"]
+
+        # Triem una paraula candidata de la primera variable
+        paraula = dominis[id_variable][0]
+
+        assignacio_test = {}
+
+        nous_dominis = reduir_dominis(
+            id_variable,
+            paraula,
+            dominis,
+            encreuaments,
+            assignacio_test
+        )
+
+        print("Variable provada:", id_variable)
+        print("Paraula provada:", paraula)
+        print("Domini original de la variable veïna:",
+              dominis[id_altra])
+        
+        if nous_dominis is None:
+            print("Resultat: algun domini ha quedat buit.")
+        else:
+            print("Domini reduït de la variable veïna:",
+                  nous_dominis[id_altra])
+
+            pos_meva = e["pos1"]
+            pos_altra = e["pos2"]
+
+            print("Lletra exigida:", paraula[pos_meva])
+            print(
+                "Totes les paraules són compatibles:",
+                all(
+                    p[pos_altra] == paraula[pos_meva]
+                    for p in nous_dominis[id_altra]
+                )
+            )
+    else:
+        print("No hi ha encreuaments per provar.")
+
+    assignacio_fc = {}
+    comptador = [0]
+
+    resultat_fc = forward_checking(
+        variables,
+        dominis,
+        encreuaments,
+        assignacio_fc,
+        comptador
+    )
+
+    if resultat_fc:
+        print("Solució trobada:")
+        print(assignacio_fc)
+    else:
+        print("No s'ha trobat cap solució.")
+
+    print("Nombre de paraules provades:", comptador[0])
+
 
 if __name__ == "__main__":
     main()
