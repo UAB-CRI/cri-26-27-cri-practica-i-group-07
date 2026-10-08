@@ -151,6 +151,50 @@ def main():
     dominis = obtenir_dominis(variables, diccionari)
     encreuaments = trobar_encreuaments(variables)
     print("\nEncreuaments trobats:", len(encreuaments))
+            
+    # Test de la funció compleix_restriccions
+    print("\n--- Test compleix_restriccions ---")
+
+    if encreuaments:
+        encreuament = encreuaments[0]
+        id_variable = encreuament["var1"]
+
+        # Agafem una paraula del domini de la variable
+        paraula = dominis[id_variable][0]
+
+        # Sense cap altra variable assignada, ha de ser compatible
+        assignacio = {}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("Variable:", id_variable)
+        print("Paraula provada:", paraula)
+        print("Resultat sense conflictes:", resultat)
+
+        # Ara assignem una paraula a l'altra variable de l'encreuament
+        id_altra = encreuament["var2"]
+        pos1 = encreuament["pos1"]
+        pos2 = encreuament["pos2"]
+
+        assignacio = {id_altra: dominis[id_altra][0]}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("Paraula de l'altra variable:", assignacio[id_altra])
+        print("Resultat amb l'encreuament:", resultat)
+        print("Lletra de la primera paraula:", paraula[pos1])
+        print("Lletra de l'altra paraula:", assignacio[id_altra][pos2])
+        
+    else:
+        print("No s'han trobat encreuaments per provar.")
+
+
+    
+    
 if __name__ == "__main__":
     main()
 
