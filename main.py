@@ -114,6 +114,19 @@ def main():
     for v in variables:
         print(v["id"], v["direccio"], (v["fila"], v["columna"]), "longitud", v["longitud"])
 
+        # Construim els dominis inicials
+    dominis = construir_dominis(variables, diccionari)
+
+    print("\nDominis inicials:")
+
+    for variable in variables:
+        id_variable = variable["id"]
+        paraules = dominis[id_variable]
+
+        print(f"X{id_variable} (longitud {variable['longitud']}):")
+        print("  Nombre de paraules:", len(paraules))
+        print("  Paraules:", ", ".join(paraules))   
+
 
 if __name__ == "__main__":
     main()
