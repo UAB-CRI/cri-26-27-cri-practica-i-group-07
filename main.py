@@ -187,7 +187,30 @@ def imprimir_solucio(tauler, variables, assignacio):
         print(" ".join(str(casella) for casella in fila))
 
 
+def reduir_dominis(id_variable, paraula, dominis, encreuaments, assignacio):
+    """Retorna uns dominis nous on s'han tret les paraules incompatibles
+    amb 'paraula' de les variables no assignades que es creuen amb id_variable.
+    Retorna None si algun domini queda buit."""
+    nous = dict(dominis)  # còpia: així no cal desfer res en tornar enrere
 
+    for e in encreuaments:
+        if e["var1"] == id_variable:
+            altra, pos_meva, pos_altra = e["var2"], e["pos1"], e["pos2"]
+        elif e["var2"] == id_variable:
+            altra, pos_meva, pos_altra = e["var1"], e["pos2"], e["pos1"]
+        else:
+            continue
+
+        if altra in assignacio:
+            continue
+
+        # Ens quedem només amb les paraules que tenen la lletra que cal
+        nous[altra] = [p for p in nous[altra] if p[pos_altra] == paraula[pos_meva]]
+
+        if not nous[altra]:
+            return None  # domini buit: aquesta paraula no pot ser
+
+    return nous
 
 
 
