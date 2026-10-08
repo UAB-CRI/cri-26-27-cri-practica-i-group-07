@@ -78,7 +78,33 @@ def trobar_variables(crossword):
                     numero_variable += 1
 
     return variables
+def obtenir_dominis(variables, diccionari):
+    """Filtra les paraules del diccionari segons la longitud de cada variable."""
+    dominis = {}
+    for v in variables:
+        longitud = v["longitud"]
+        dominis[v["id"]] = [p for p in diccionari if len(p) == longitud]
+    return dominis
 
+
+def trobar_encreuaments(variables):
+    """Trobem quines variables es creuen i quines posicions comparteixen."""
+    encreuaments = []
+    for i in range(len(variables)):
+        for j in range(i + 1, len(variables)):
+            v1 = variables[i]
+            v2 = variables[j]
+
+            for pos1, casella1 in enumerate(v1["caselles"]):
+                for pos2, casella2 in enumerate(v2["caselles"]):
+                    if casella1 == casella2:
+                        encreuaments.append({
+                            "var1": v1["id"],
+                            "pos1": pos1,
+                            "var2": v2["id"],
+                            "pos2": pos2
+                        })
+    return encreuaments
 
 def construir_dominis(variables, diccionari):
     dominis = {}
@@ -114,20 +140,9 @@ def main():
     for v in variables:
         print(v["id"], v["direccio"], (v["fila"], v["columna"]), "longitud", v["longitud"])
 
-        # Construim els dominis inicials
-    dominis = construir_dominis(variables, diccionari)
-
-    print("\nDominis inicials:")
-
-    for variable in variables:
-        id_variable = variable["id"]
-        paraules = dominis[id_variable]
-
-        print(f"X{id_variable} (longitud {variable['longitud']}):")
-        print("  Nombre de paraules:", len(paraules))
-        print("  Paraules:", ", ".join(paraules))   
-
-
+    dominis = obtenir_dominis(variables, diccionari)
+    encreuaments = trobar_encreuaments(variables)
+    print("\nEncreuaments trobats:", len(encreuaments))
 if __name__ == "__main__":
     main()
 
