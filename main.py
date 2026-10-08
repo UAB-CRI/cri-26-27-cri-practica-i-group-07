@@ -168,6 +168,25 @@ def backtracking(variables, dominis, encreuaments, assignacio):
     # Cap paraula del domini ha permès trobar una solució
     return False
 
+    
+def imprimir_solucio(tauler, variables, assignacio):
+    """Imprimeix el tauler amb les paraules de la solució."""
+
+    # Fem una còpia del tauler per no modificar l'original
+    tauler_resolt = [fila.copy() for fila in tauler]
+
+    for variable in variables:
+        id_variable = variable["id"]
+        paraula = assignacio[id_variable]
+
+        for i, (fila, columna) in enumerate(variable["caselles"]):
+            tauler_resolt[fila][columna] = paraula[i]
+
+    # Mostrem el tauler resolt
+    for fila in tauler_resolt:
+        print(" ".join(str(casella) for casella in fila))
+
+
 
 
 
@@ -264,6 +283,21 @@ def main():
         print(assignacio)
     else:
         print("No s'ha trobat cap solució.")
+
+    
+    # Resolem el mots encreuats amb backtracking
+    assignacio = {}
+
+    if backtracking(variables, dominis, encreuaments, assignacio):
+        print("\nSolució trobada:")
+        print(assignacio)
+
+        print("\nTauler resolt:")
+        imprimir_solucio(crossword, variables, assignacio)
+    else:
+        print("No s'ha trobat cap solució.")
+
+
 if __name__ == "__main__":
     main()
 
