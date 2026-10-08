@@ -129,7 +129,7 @@ def compleix_restriccions(id_variable, paraula, assignacio, encreuaments):
     return True
 
 
-def backtracking(variables, dominis, encreuaments, assignacio):
+def backtracking(variables, dominis, encreuaments, assignacio, comptador):
     """Resol el mots encreuats mitjançant backtracking."""
 
     # Cas base: totes les variables tenen una paraula assignada
@@ -148,6 +148,7 @@ def backtracking(variables, dominis, encreuaments, assignacio):
     id_variable = variable["id"]
 
     for paraula in dominis[id_variable]:
+        comptador[0] += 1
 
         # Comprovem si la paraula compleix els encreuaments
         if compleix_restriccions(
@@ -158,7 +159,7 @@ def backtracking(variables, dominis, encreuaments, assignacio):
 
             # Intentem resoldre les variables restants
             if backtracking(
-                variables, dominis, encreuaments, assignacio
+                variables, dominis, encreuaments, assignacio, comptador
             ):
                 return True
 
@@ -327,8 +328,9 @@ def main():
     
 
     assignacio = {}
-
-    if backtracking(variables, dominis, encreuaments, assignacio):
+    comptador = [0]
+    
+    if backtracking(variables, dominis, encreuaments, assignacio, comptador):
         print("Solució trobada:")
         print(assignacio)
     else:
@@ -337,8 +339,8 @@ def main():
     
     # Resolem el mots encreuats amb backtracking
     assignacio = {}
-
-    if backtracking(variables, dominis, encreuaments, assignacio):
+    comptador = [0]
+    if backtracking(variables, dominis, encreuaments, assignacio, comptador):
         print("\nSolució trobada:")
         print(assignacio)
 
@@ -412,6 +414,53 @@ def main():
         print("No s'ha trobat cap solució.")
 
     print("Nombre de paraules provades:", comptador[0])
+
+    
+    # Comparació dels dos algorismes
+    print("\n--- Comparació d'algorismes ---")
+
+    # 1. Backtracking normal
+    assignacio_bt = {}
+    comptador_bt = [0]
+
+    resultat_bt = backtracking(
+        variables,
+        dominis,
+        encreuaments,
+        assignacio_bt,
+        comptador_bt
+    )
+
+    print("\nBacktracking normal:")
+    print("Solució trobada:", resultat_bt)
+    print("Paraules candidates provades:", comptador_bt[0])
+
+    # 2. Forward Checking
+    assignacio_fc = {}
+    comptador_fc = [0]
+
+    resultat_fc = forward_checking(
+        variables,
+        dominis,
+        encreuaments,
+        assignacio_fc,
+        comptador_fc
+    )
+
+    print("\nForward Checking:")
+    print("Solució trobada:", resultat_fc)
+    print("Paraules candidates provades:", comptador_fc[0])
+
+    # 3. Comparació
+    if resultat_bt and resultat_fc:
+        diferencia = comptador_bt[0] - comptador_fc[0]
+
+        print("\nDiferència de candidates provades:", diferencia)
+
+        if comptador_bt[0] > 0:
+            millora = diferencia / comptador_bt[0] * 100
+            print(f"Reducció de candidates: {millora:.2f}%")
+
 
 
 if __name__ == "__main__":
