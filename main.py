@@ -129,6 +129,47 @@ def compleix_restriccions(id_variable, paraula, assignacio, encreuaments):
     return True
 
 
+def backtracking(variables, dominis, encreuaments, assignacio):
+    """Resol el mots encreuats mitjançant backtracking."""
+
+    # Cas base: totes les variables tenen una paraula assignada
+    if len(assignacio) == len(variables):
+        return True
+
+    # Seleccionem la primera variable que encara no està assignada
+    variable = None
+
+    for v in variables:
+        if v["id"] not in assignacio:
+            variable = v
+            break
+
+    # Provem totes les paraules del domini de la variable
+    id_variable = variable["id"]
+
+    for paraula in dominis[id_variable]:
+
+        # Comprovem si la paraula compleix els encreuaments
+        if compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        ):
+            # Assignem la paraula a la variable
+            assignacio[id_variable] = paraula
+
+            # Intentem resoldre les variables restants
+            if backtracking(
+                variables, dominis, encreuaments, assignacio
+            ):
+                return True
+
+            # Si no trobem solució, desfem l'assignació
+            del assignacio[id_variable]
+
+    # Cap paraula del domini ha permès trobar una solució
+    return False
+
+
+
 
 
 def main():
@@ -215,7 +256,14 @@ def main():
     else:
         print("No s'ha trobat cap paraula incompatible al domini.")
     
-    
+
+    assignacio = {}
+
+    if backtracking(variables, dominis, encreuaments, assignacio):
+        print("Solució trobada:")
+        print(assignacio)
+    else:
+        print("No s'ha trobat cap solució.")
 if __name__ == "__main__":
     main()
 
