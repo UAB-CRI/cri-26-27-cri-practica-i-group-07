@@ -107,6 +107,28 @@ def trobar_encreuaments(variables):
     return encreuaments
 
 
+def compleix_restriccions(id_variable, paraula, assignacio, encreuaments):
+    """Comprova si una paraula compleix els encreuaments amb les variables assignades."""
+
+    for encreuament in encreuaments:
+        var1 = encreuament["var1"]
+        var2 = encreuament["var2"]
+        pos1 = encreuament["pos1"]
+        pos2 = encreuament["pos2"]
+
+        # Si la variable actual és var1 i var2 ja està assignada
+        if id_variable == var1 and var2 in assignacio:
+            if paraula[pos1] != assignacio[var2][pos2]:
+                return False
+
+        # Si la variable actual és var2 i var1 ja està assignada
+        elif id_variable == var2 and var1 in assignacio:
+            if paraula[pos2] != assignacio[var1][pos1]:
+                return False
+
+    return True
+
+
 
 
 def main():
@@ -129,6 +151,71 @@ def main():
     dominis = obtenir_dominis(variables, diccionari)
     encreuaments = trobar_encreuaments(variables)
     print("\nEncreuaments trobats:", len(encreuaments))
+            
+    # Test de la funció compleix_restriccions
+    print("\n--- Test compleix_restriccions ---")
+
+    if encreuaments:
+        encreuament = encreuaments[0]
+        id_variable = encreuament["var1"]
+
+        # Agafem una paraula del domini de la variable
+        paraula = dominis[id_variable][0]
+
+        # Sense cap altra variable assignada, ha de ser compatible
+        assignacio = {}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("Variable:", id_variable)
+        print("Paraula provada:", paraula)
+        print("Resultat sense conflictes:", resultat)
+
+        # Ara assignem una paraula a l'altra variable de l'encreuament
+        id_altra = encreuament["var2"]
+        pos1 = encreuament["pos1"]
+        pos2 = encreuament["pos2"]
+
+        assignacio = {id_altra: dominis[id_altra][0]}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("Paraula de l'altra variable:", assignacio[id_altra])
+        print("Resultat amb l'encreuament:", resultat)
+        print("Lletra de la primera paraula:", paraula[pos1])
+        print("Lletra de l'altra paraula:", assignacio[id_altra][pos2])
+        
+    else:
+        print("No s'han trobat encreuaments per provar.")
+
+        # Busquem una paraula incompatible al domini de l'altra variable
+    paraula_incompatible = None
+
+    for candidata in dominis[id_altra]:
+        if candidata[pos2] != paraula[pos1]:
+            paraula_incompatible = candidata
+            break
+
+    if paraula_incompatible is not None:
+        assignacio = {id_altra: paraula_incompatible}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("\n--- Test de conflicte ---")
+        print("Paraula actual:", paraula)
+        print("Paraula incompatible:", paraula_incompatible)
+        print("Resultat esperat: False")
+        print("Resultat obtingut:", resultat)
+    else:
+        print("No s'ha trobat cap paraula incompatible al domini.")
+    
+    
 if __name__ == "__main__":
     main()
 
