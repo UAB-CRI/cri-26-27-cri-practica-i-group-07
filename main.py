@@ -212,7 +212,34 @@ def reduir_dominis(id_variable, paraula, dominis, encreuaments, assignacio):
 
     return nous
 
+def forward_checking(variables, dominis, encreuaments, assignacio, comptador):
+    """Backtracking amb forward checking."""
+    if len(assignacio) == len(variables):
+        return True
 
+    id_variable = next(v["id"] for v in variables if v["id"] not in assignacio)
+
+    for paraula in dominis[id_variable]:
+        comptador[0] += 1
+
+        # No repetir paraules
+        if paraula in assignacio.values():
+            continue
+
+        nous_dominis = reduir_dominis(id_variable, paraula, dominis,
+                                      encreuaments, assignacio)
+        if nous_dominis is None:
+            continue
+
+        assignacio[id_variable] = paraula
+
+        if forward_checking(variables, nous_dominis, encreuaments,
+                            assignacio, comptador):
+            return True
+
+        del assignacio[id_variable]
+
+    return False
 
 def main():
     crossword = llegir_crossword("MaterialsPractica/crossword_CB_v3.txt")
