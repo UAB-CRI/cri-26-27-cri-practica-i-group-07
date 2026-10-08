@@ -192,7 +192,28 @@ def main():
     else:
         print("No s'han trobat encreuaments per provar.")
 
+        # Busquem una paraula incompatible al domini de l'altra variable
+    paraula_incompatible = None
 
+    for candidata in dominis[id_altra]:
+        if candidata[pos2] != paraula[pos1]:
+            paraula_incompatible = candidata
+            break
+
+    if paraula_incompatible is not None:
+        assignacio = {id_altra: paraula_incompatible}
+
+        resultat = compleix_restriccions(
+            id_variable, paraula, assignacio, encreuaments
+        )
+
+        print("\n--- Test de conflicte ---")
+        print("Paraula actual:", paraula)
+        print("Paraula incompatible:", paraula_incompatible)
+        print("Resultat esperat: False")
+        print("Resultat obtingut:", resultat)
+    else:
+        print("No s'ha trobat cap paraula incompatible al domini.")
     
     
 if __name__ == "__main__":
