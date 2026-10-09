@@ -30,3 +30,17 @@ def llegir_diccionari(nom_fitxer):
     return paraules
 
 
+def crear_diccionari_reduit(origen, desti, n=100000, llavor=42, curtes=5):
+    """Crea un diccionari petit (~n paraules) a partir del gran.
+    Es conserven TOTES les paraules de longitud <= curtes (n'hi ha poques
+    i el tauler en necessita), i la resta es mostregen aleatoriament."""
+
+    paraules = sorted(llegir_diccionari(origen))
+    curtes_l = [p for p in paraules if len(p) <= curtes]
+    llargues = [p for p in paraules if len(p) > curtes]
+    random.seed(llavor)
+    k = max(0, min(n - len(curtes_l), len(llargues)))
+    mostra = curtes_l + random.sample(llargues, k)
+    with open(desti, "w", encoding="latin-1") as f:
+        f.write("\n".join(mostra) + "\n")
+    return len(mostra)
