@@ -44,3 +44,10 @@ def crear_diccionari_reduit(origen, desti, n=100000, llavor=42, curtes=5):
     with open(desti, "w", encoding="latin-1") as f:
         f.write("\n".join(mostra) + "\n")
     return len(mostra)
+
+
+def agrupar_per_longitud(paraules):
+    grups = defaultdict(set)
+    for p in paraules:
+        grups[len(p)].add(p)
+    return grups
