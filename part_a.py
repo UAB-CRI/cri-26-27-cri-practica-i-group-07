@@ -51,3 +51,21 @@ def agrupar_per_longitud(paraules):
     for p in paraules:
         grups[len(p)].add(p)
     return grups
+
+class Index:
+    """Índex : (longitud, posició) -> {lletra: conjunt de paraules}.
+    Només es construeix per a les longituds/posicions que es necessiten."""
+
+    def __init__(self, per_longitud):
+        self.per_longitud = per_longitud
+        self.cache = {}
+
+    def lletres(self, longitud, pos):
+        clau = (longitud, pos)
+        if clau not in self.cache:
+            d = defaultdict(set)
+            for p in self.per_longitud.get(longitud, ()):
+                d[p[pos]].add(p)
+            self.cache[clau] = d
+        return self.cache[clau]
+
