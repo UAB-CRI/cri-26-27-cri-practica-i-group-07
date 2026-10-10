@@ -102,3 +102,27 @@ def obtenir_candidates(id_variable, variables, per_longitud,
 
     return candidats
 
+def seleccionar_mrv(variables, per_longitud, assignacio, veins, index):
+    """Selecciona la variable no assignada amb menys candidates."""
+    millor_variable = None
+    millors_candidates = None
+
+    for variable in variables:
+        id_variable = variable["id"]
+
+        if id_variable in assignacio:
+            continue
+
+        candidats = obtenir_candidates(
+            id_variable, variables, per_longitud,
+            assignacio, veins, index
+        )
+
+        if millors_candidates is None or len(candidats) < len(millors_candidates):
+            millor_variable = id_variable
+            millors_candidates = candidats
+
+        if len(millors_candidates) == 0:
+            break
+
+    return millor_variable, millors_candidates
