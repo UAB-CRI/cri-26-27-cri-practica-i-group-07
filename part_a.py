@@ -126,3 +126,84 @@ def seleccionar_mrv(variables, per_longitud, assignacio, veins, index):
             break
 
     return millor_variable, millors_candidates
+
+def forward_checking_mrv(variables, per_longitud, assignacio,
+                         veins, index, comptador):
+    """Resol el crossword amb Forward Checking i selecció MRV."""
+    if len(assignacio) == len(variables):
+        return True
+
+    id_variable, candidats = seleccionar_mrv(
+        variables, per_longitud, assignacio, veins, index
+    )
+
+    # Si no hi ha candidats, aquesta branca no té solució
+    if not candidats:
+        return False
+
+    for paraula in sorted(candidats):
+        comptador[0] += 1
+        assignacio[id_variable] = paraula
+
+        # Forward Checking: comprovar que cap variable
+        # pendent es quedi sense candidats
+        viable = True
+
+        for variable in variables:
+            altra = variable["id"]
+
+            if altra not in assignacio:
+                possibles = obtenir_candidates(
+                    altra, variables, per_longitud,
+                    assignacio, veins, index
+                )
+                if not possibles:
+                    viable = False
+                    break
+
+        if viable and forward_checking_mrv(
+            variables, per_longitud, assignacio,
+            veins, index, comptador
+        ):
+            return True
+
+        del assignacio[id_variable]
+
+    return False
+
+
+
+if __name__ == "__main__":
+    tauler = llegir_crossword("MaterialsPractica/crossword_A.txt")
+    variables = trobar_variables(tauler)
+    encreuaments = trobar_encreuaments(variables)
+    veins = preparar_veins(encreuaments)
+
+    print("Llegint diccionari...")
+    paraules = llegir_diccionari(
+        "MaterialsPractica/diccionari_A.txt"
+    )
+    print("Paraules úniques:", len(paraules))
+
+    per_longitud = agrupar_per_longitud(paraules)
+    index = Index(per_longitud)
+
+    assignacio = {}
+    comptador = [0]
+
+    inici = time.perf_counter()
+
+    resultat = forward_checking_mrv(
+        variables, per_longitud, assignacio,
+        veins, index, comptador
+    )
+
+    temps = time.perf_counter() - inici
+
+    print("\nSolució trobada:", resultat)
+    print("Paraules candidates provades:", comptador[0])
+    print(f"Temps d'execució: {temps:.2f} segons")
+
+    if resultat:
+        imprimir_solucio(tauler, variables, assignacio)
+
