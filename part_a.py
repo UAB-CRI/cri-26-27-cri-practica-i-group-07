@@ -69,3 +69,13 @@ class Index:
             self.cache[clau] = d
         return self.cache[clau]
 
+# ----------------------------------------------------------------------
+# Preparació del problema
+# ----------------------------------------------------------------------
+def preparar_veins(encreuaments):
+    """veins[id] = llista de (id_altra, pos_en_meva, pos_en_altra)."""
+    veins = defaultdict(list)
+    for e in encreuaments:
+        veins[e["var1"]].append((e["var2"], e["pos1"], e["pos2"]))
+        veins[e["var2"]].append((e["var1"], e["pos2"], e["pos1"]))
+    return veins
