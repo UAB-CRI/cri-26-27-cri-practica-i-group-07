@@ -79,3 +79,28 @@ def preparar_veins(encreuaments):
         veins[e["var1"]].append((e["var2"], e["pos1"], e["pos2"]))
         veins[e["var2"]].append((e["var1"], e["pos2"], e["pos1"]))
     return veins
+
+
+def obtenir_candidates(id_variable, dominis, assignacio, veins, index):
+    """Retorna les paraules compatibles amb els encreuaments actuals."""
+    candidats = None
+
+    for altra, pos_meva, pos_altra in veins[id_variable]:
+        if altra not in assignacio:
+            continue
+
+        lletra = assignacio[altra][pos_altra]
+        compatibles = index.lletres(
+            len(dominis[id_variable][0]) if dominis[id_variable] else 0,
+            pos_meva
+        ).get(lletra, set())
+
+        if candidats is None:
+            candidats = set(compatibles)
+        else:
+            candidats.intersection_update(compatibles)
+
+    if candidats is None:
+        candidats = set(dominis[id_variable])
+
+    return candidats - set(assignacio.values())
