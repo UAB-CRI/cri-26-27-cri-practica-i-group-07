@@ -81,26 +81,24 @@ def preparar_veins(encreuaments):
     return veins
 
 
-def obtenir_candidates(id_variable, dominis, assignacio, veins, index):
-    """Retorna les paraules compatibles amb els encreuaments actuals."""
-    candidats = None
+def obtenir_candidates(id_variable, variables, per_longitud,
+                       assignacio, veins, index):
+    """Obté les paraules compatibles amb les lletres ja assignades."""
+    variable = next(v for v in variables if v["id"] == id_variable)
+    longitud = variable["longitud"]
+
+    candidats = set(per_longitud.get(longitud, set()))
 
     for altra, pos_meva, pos_altra in veins[id_variable]:
-        if altra not in assignacio:
-            continue
-
-        lletra = assignacio[altra][pos_altra]
-        compatibles = index.lletres(
-            len(dominis[id_variable][0]) if dominis[id_variable] else 0,
-            pos_meva
-        ).get(lletra, set())
-
-        if candidats is None:
-            candidats = set(compatibles)
-        else:
+        if altra in assignacio:
+            lletra = assignacio[altra][pos_altra]
+            compatibles = index.lletres(longitud, pos_meva).get(
+                lletra, set()
+            )
             candidats.intersection_update(compatibles)
 
-    if candidats is None:
-        candidats = set(dominis[id_variable])
+    # No permetre repetir paraules
+    candidats.difference_update(assignacio.values())
 
-    return candidats - set(assignacio.values())
+    return candidats
+
